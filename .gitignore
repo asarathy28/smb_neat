@@ -1,0 +1,9 @@
+*.pyc
+*~
+/.vscode
+__pycache__
+SMBenv
+neat-python
+gym-retro
+/static
+.DS_Store
