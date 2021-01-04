@@ -3,9 +3,12 @@ import cv2
 import neat
 import pickle
 import os
+from nes_py.wrappers import JoypadSpace
 import gym_super_mario_bros
+from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 
 env = gym_super_mario_bros.make('SuperMarioBros-v0')
+env = JoypadSpace(env, SIMPLE_MOVEMENT)
 
 def eval_genomes(genomes, config):
 
@@ -38,7 +41,7 @@ def eval_genomes(genomes, config):
 
             imgarray = []
 
-            #env.render()
+            env.render()
             frame += 1
 
             #shows what the AI sees
@@ -68,6 +71,9 @@ def eval_genomes(genomes, config):
             # converting binary list to integer
             int_output = int("".join(str(round(x)) for x in nn_output), 2)
             #print(int_output)
+
+            if int_output == 7:
+                int_output = 0;
 
             ob, reward, done, info = env.step(int_output)
             #print("current fitness: " + str(g.fitness))
@@ -124,5 +130,5 @@ def run(config_path):
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, "SMB-config-feedforward.txt")
+    config_path = os.path.join(local_dir, "simple-config-feedforward.txt")
     run(config_path)

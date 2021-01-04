@@ -3,9 +3,12 @@ import cv2
 import neat
 import pickle
 import os
+from nes_py.wrappers import JoypadSpace
 import gym_super_mario_bros
+from gym_super_mario_bros.actions import RIGHT_ONLY
 
 env = gym_super_mario_bros.make('SuperMarioBros-v0')
+env = JoypadSpace(env, RIGHT_ONLY)
 
 def eval_genomes(genomes, config):
 
@@ -38,7 +41,7 @@ def eval_genomes(genomes, config):
 
             imgarray = []
 
-            #env.render()
+            env.render()
             frame += 1
 
             #shows what the AI sees
@@ -66,7 +69,20 @@ def eval_genomes(genomes, config):
 
             # using join() + list comprehension
             # converting binary list to integer
-            int_output = int("".join(str(round(x)) for x in nn_output), 2)
+            #int_output = int("".join(str(round(x)) for x in nn_output), 2) + 1
+
+            # using bit shift + | operator
+            # converting binary list to integer
+            int_output = 0
+            for ele in nn_output:
+                if ele > 0.5:
+                    push = 1
+                else:
+                    push = 0
+
+                int_output = (int_output << 1) | push
+
+            int_output += 1
             #print(int_output)
 
             ob, reward, done, info = env.step(int_output)
@@ -99,10 +115,10 @@ def eval_genomes(genomes, config):
             if life < 2:
                 done = True
 
-            if done or counter == 150:
+            if done or counter == 200:
                 done = True
 
-                print("END OF GENOME " + str(g_id))
+                print("GENOME " + str(g_id))
                 print("FITNESS: " + str(g.fitness))
                 g.fitness += info['score']
                 print("FITNESS + SCORE: " + str(g.fitness))
@@ -124,5 +140,5 @@ def run(config_path):
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, "SMB-config-feedforward.txt")
+    config_path = os.path.join(local_dir, "right-config-feedforward.txt")
     run(config_path)

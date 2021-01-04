@@ -27,8 +27,8 @@ def eval_genomes(genomes, config):
 
         net = neat.nn.recurrent.RecurrentNetwork.create(g, config)
 
-        best_fittness = 0
-        current_fittness = 0
+        best_fitness = 0
+        current_fitness = 0
         frame = 0
         counter = 0
         xpos = 0
@@ -62,19 +62,19 @@ def eval_genomes(genomes, config):
 
             xpos = info['xscrollLo']
             if xpos > xpos_max:
-                 current_fittness += 1
+                 current_fitness += 1
                  xpos = xpos_max
 
-            if current_fittness > best_fittness:
-                best_fittness = current_fittness
+            if current_fitness > best_fitness:
+                best_fitness = current_fitness
             else:
                 counter += 1
 
             if done or counter == 200:
                 done = True
-                print(g_id, current_fittness)
+                print(g_id, current_fitness)
 
-            g.fittness = current_fittness
+            g.fitness = current_fitness
 
 
 
